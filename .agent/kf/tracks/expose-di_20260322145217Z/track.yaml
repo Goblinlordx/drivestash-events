@@ -1,0 +1,60 @@
+id: expose-di_20260322145217Z
+title: Expose engine DI on EventLogConfig
+type: feature
+status: pending
+created: '2026-03-22'
+updated: '2026-03-22'
+spec:
+  summary: Upgrade drivestash to ^0.4.0. Move engine injection from private _internal to public EventLogConfig.engine. Re-export
+    SyncEngine, LocalStorePort, DriveAdapterPort, SyncEngineOptions so users can test with mocks or provide custom storage.
+  context: drivestash 0.4.0 makes SyncEngineOptions, LocalStorePort, and DriveAdapterPort public. Users of drivestash-events
+    currently cannot inject a custom engine without using the private _internal parameter. This prevents external users from
+    testing with mocks or providing alternative storage implementations.
+  codebase_analysis: createEventLog takes (config, _internal?) where _internal.engine accepts a SyncEngine. All 4 test files
+    use this for mock injection. EventLogConfig in types.ts has storeName, getAccessToken, deviceId. index.ts re-exports types
+    from types.ts, event-log.ts, projection.ts, query.ts, union-merge.ts, device-id.ts, event-id.ts. No drivestash types are
+    currently re-exported.
+  acceptance_criteria:
+  - drivestash upgraded to ^0.4.0
+  - EventLogConfig has optional engine field accepting SyncEngine
+  - _internal parameter removed from createEventLog
+  - SyncEngine, LocalStorePort, DriveAdapterPort, SyncEngineOptions re-exported from index.ts
+  - All tests updated to use config.engine instead of _internal
+  - README documents engine injection for testing and custom storage
+  out_of_scope: Changing EventLog behavior. Adding new EventLog methods. Creating custom store implementations.
+  technical_notes: 1. Bump drivestash to ^0.4.0. 2. Add optional engine field to EventLogConfig. 3. Remove _internal parameter
+    from createEventLog — use config.engine instead. 4. Update all 4 test files to pass engine via config instead of _internal.
+    5. Re-export SyncEngine, LocalStorePort, DriveAdapterPort, SyncEngineOptions, SyncRecord from drivestash via index.ts.
+    6. Update README with DI/testing documentation.
+plan:
+  - phase: Dependency Upgrade
+    tasks:
+      - text: Bump drivestash to ^0.4.0 and npm install
+        done: false
+  - phase: API Change
+    tasks:
+      - text: Add optional engine field to EventLogConfig in types.ts
+        done: false
+      - text: Update createEventLog to use config.engine instead of _internal param
+        done: false
+      - text: Remove InternalOptions interface
+        done: false
+      - text: Update all 4 test files to pass engine via config instead of second arg
+        done: false
+      - text: Verify all tests pass and typecheck clean
+        done: false
+  - phase: Re-exports
+    tasks:
+      - text: Re-export SyncEngine, LocalStorePort, DriveAdapterPort, SyncEngineOptions, SyncRecord from index.ts
+        done: false
+      - text: Verify build output includes re-exported types in d.ts
+        done: false
+  - phase: Documentation
+    tasks:
+      - text: Update README Quick Start to show engine injection for testing
+        done: false
+      - text: Add Testing section to README showing mock engine pattern
+        done: false
+      - text: Document custom storage usage in README
+        done: false
+extra: {}
