@@ -1,117 +1,103 @@
 id: projections_20260322083202Z
-title: "Projections, queries, and subscriptions"
+title: Projections, queries, and subscriptions
 type: feature
 status: pending
 created: 2026-03-22
-updated: 2026-03-22
+updated: '2026-03-22'
 spec:
-  summary: |
-    Projection engine (fold events into state), event querying by type/time
+  summary: 'Projection engine (fold events into state), event querying by type/time
+
     range/predicate, and observer-pattern subscriptions for new events.
-  context: |
-    With the EventLog providing append and sync (track 2), consumers need
+
+    '
+  context: 'With the EventLog providing append and sync (track 2), consumers need
+
     to derive state from events and react to changes. The trip-planning
+
     project demonstrates this pattern: stamps (events) are projected into
+
     category progress and user score via pure fold functions.
 
+
     This track provides three capabilities:
+
     1. Projections — pure fold functions that replay events into state
+
     2. Queries — filter events by type, time range, or custom predicate
+
     3. Subscriptions — get notified when new events are appended
-  codebase_analysis: |
-    - Trip-planning useProgress() folds stamps → CategoryProgress[]
-    - Trip-planning useScore() folds stamps → {xp, rank}
-    - Both are pure functions of the event set — classic projections
-    - EventLog.list() provides the full ordered event stream
-    - EventLog.append() is the single write path — subscription hook here
-    - drivestash onStatusChange provides sync status but not record-level
-      change notifications, so subscriptions must be at the EventLog layer
+
+    '
+  codebase_analysis: "- Trip-planning useProgress() folds stamps → CategoryProgress[]\n- Trip-planning useScore() folds stamps\
+    \ → {xp, rank}\n- Both are pure functions of the event set — classic projections\n- EventLog.list() provides the full\
+    \ ordered event stream\n- EventLog.append() is the single write path — subscription hook here\n- drivestash onStatusChange\
+    \ provides sync status but not record-level\n  change notifications, so subscriptions must be at the EventLog layer\n"
   acceptance_criteria:
-    - "project(events, projector) folds an event array into projected state"
-    - "Projector interface: {init: State, apply: (state, event) => State}"
-    - "EventLog.project(projector) replays all events through the projector"
-    - "EventLog.query({type?, after?, before?, filter?}) returns matching events"
-    - "Query supports filtering by event type (string match)"
-    - "Query supports filtering by time range (after/before ISO timestamps)"
-    - "Query supports custom predicate function"
-    - "EventLog.subscribe(listener) notifies on each append"
-    - "subscribe() returns an unsubscribe function"
-    - "Subscriptions fire for local appends immediately"
-    - "Subscriptions fire for events arriving via sync (new events not previously seen)"
-  out_of_scope: |
-    - Snapshot / materialized view caching (future track)
+  - project(events, projector) folds an event array into projected state
+  - 'Projector interface: {init: State, apply: (state, event) => State}'
+  - EventLog.project(projector) replays all events through the projector
+  - EventLog.query({type?, after?, before?, filter?}) returns matching events
+  - Query supports filtering by event type (string match)
+  - Query supports filtering by time range (after/before ISO timestamps)
+  - Query supports custom predicate function
+  - EventLog.subscribe(listener) notifies on each append
+  - subscribe() returns an unsubscribe function
+  - Subscriptions fire for local appends immediately
+  - Subscriptions fire for events arriving via sync (new events not previously seen)
+  out_of_scope: '- Snapshot / materialized view caching (future track)
+
     - Persistent projections (re-computed on each call)
+
     - React hooks or framework bindings (separate package)
+
     - Real-time cross-client streaming
-  technical_notes: |
-    Projection interface:
 
-      interface Projector<TState, TPayload = unknown> {
-        readonly init: TState
-        apply(state: TState, event: EventRecord<TPayload>): TState
-      }
-
-      function project<TState, TPayload>(
-        events: EventRecord<TPayload>[],
-        projector: Projector<TState, TPayload>
-      ): TState {
-        return events.reduce(
-          (state, event) => projector.apply(state, event),
-          projector.init
-        )
-      }
-
-    Query interface:
-
-      interface EventQuery<TPayload = unknown> {
-        type?: string               // exact match on event type
-        after?: string              // ISO timestamp lower bound (exclusive)
-        before?: string             // ISO timestamp upper bound (exclusive)
-        filter?: (event: EventRecord<TPayload>) => boolean
-      }
-
-    Subscription mechanism:
-    - EventLog maintains a Set<EventListener> internally
-    - append() notifies all listeners with the new event
-    - After sync/pull, diff the event list to detect new arrivals and
-      notify listeners for each new event (events not in the pre-sync set)
-    - This requires tracking known event IDs (a Set<string>) and comparing
-      after pull completes
+    '
+  technical_notes: "Projection interface:\n\n  interface Projector<TState, TPayload = unknown> {\n    readonly init: TState\n\
+    \    apply(state: TState, event: EventRecord<TPayload>): TState\n  }\n\n  function project<TState, TPayload>(\n    events:\
+    \ EventRecord<TPayload>[],\n    projector: Projector<TState, TPayload>\n  ): TState {\n    return events.reduce(\n   \
+    \   (state, event) => projector.apply(state, event),\n      projector.init\n    )\n  }\n\nQuery interface:\n\n  interface\
+    \ EventQuery<TPayload = unknown> {\n    type?: string               // exact match on event type\n    after?: string \
+    \             // ISO timestamp lower bound (exclusive)\n    before?: string             // ISO timestamp upper bound (exclusive)\n\
+    \    filter?: (event: EventRecord<TPayload>) => boolean\n  }\n\nSubscription mechanism:\n- EventLog maintains a Set<EventListener>\
+    \ internally\n- append() notifies all listeners with the new event\n- After sync/pull, diff the event list to detect new\
+    \ arrivals and\n  notify listeners for each new event (events not in the pre-sync set)\n- This requires tracking known\
+    \ event IDs (a Set<string>) and comparing\n  after pull completes\n"
 plan:
-  - phase: "Projection engine"
-    tasks:
-      - text: "Write tests for project(): empty events, single event, multiple events, various projector shapes"
-        done: false
-      - text: "Define Projector<TState, TPayload> interface in src/types.ts"
-        done: false
-      - text: "Implement project() function in src/projection.ts"
-        done: false
-      - text: "Write test for EventLog.project(projector) integration"
-        done: false
-      - text: "Add project(projector) method to EventLog"
-        done: false
-  - phase: "Event querying"
-    tasks:
-      - text: "Write tests for query: by type, by time range, by custom filter, combined filters"
-        done: false
-      - text: "Define EventQuery interface in src/types.ts"
-        done: false
-      - text: "Implement queryEvents() pure function in src/query.ts"
-        done: false
-      - text: "Add query(q) method to EventLog that delegates to queryEvents()"
-        done: false
-  - phase: "Event subscriptions"
-    tasks:
-      - text: "Write tests for subscribe: fires on append, unsubscribe works, multiple listeners"
-        done: false
-      - text: "Write tests for sync-triggered notifications: new events from pull trigger listeners"
-        done: false
-      - text: "Implement subscription registry in EventLog (Set<listener>, notify on append)"
-        done: false
-      - text: "Implement post-sync diff to detect and notify for remotely-arrived events"
-        done: false
-  - phase: "Exports and verification"
-    tasks:
-      - text: "Export project, Projector, EventQuery, queryEvents from src/index.ts"
-        done: false
+- phase: Projection engine
+  tasks:
+  - text: 'Write tests for project(): empty events, single event, multiple events, various projector shapes'
+    done: true
+  - text: Define Projector<TState, TPayload> interface in src/types.ts
+    done: true
+  - text: Implement project() function in src/projection.ts
+    done: true
+  - text: Write test for EventLog.project(projector) integration
+    done: true
+  - text: Add project(projector) method to EventLog
+    done: true
+- phase: Event querying
+  tasks:
+  - text: 'Write tests for query: by type, by time range, by custom filter, combined filters'
+    done: true
+  - text: Define EventQuery interface in src/types.ts
+    done: true
+  - text: Implement queryEvents() pure function in src/query.ts
+    done: true
+  - text: Add query(q) method to EventLog that delegates to queryEvents()
+    done: true
+- phase: Event subscriptions
+  tasks:
+  - text: 'Write tests for subscribe: fires on append, unsubscribe works, multiple listeners'
+    done: true
+  - text: 'Write tests for sync-triggered notifications: new events from pull trigger listeners'
+    done: true
+  - text: Implement subscription registry in EventLog (Set<listener>, notify on append)
+    done: true
+  - text: Implement post-sync diff to detect and notify for remotely-arrived events
+    done: true
+- phase: Exports and verification
+  tasks:
+  - text: Export project, Projector, EventQuery, queryEvents from src/index.ts
+    done: true
 extra: {}
