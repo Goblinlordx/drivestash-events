@@ -1,0 +1,26 @@
+name: drivestash-events
+tagline: "Event sourcing / event log library built on drivestash"
+description: |
+  An append-only event log library that uses drivestash for offline-first
+  storage and Google Drive sync. Consumers append immutable events and derive
+  current state by replaying them through projection functions. Designed to
+  be published as an npm package for use in any web application alongside
+  drivestash.
+
+goals:
+  - Provide an append-only event log with offline-first storage and cloud sync
+  - Derive application state by replaying events through projections
+  - Use drivestash as the sync/storage layer (peer dependency)
+  - Be framework-agnostic (no React dependency in core)
+  - Publish as a public npm package
+
+target_users:
+  - Web developers who need event sourcing with offline-first sync
+  - Developers building audit trails or undo/redo systems
+  - PWA builders who need cross-device event stream sync
+
+non_goals:
+  - Full CQRS framework
+  - Real-time event streaming between clients
+  - Server-side usage (browser-only)
+  - Built-in authentication (delegated to drivestash)

@@ -1,0 +1,30 @@
+language: TypeScript
+runtime: Browser (ES2022+)
+module_system: ESM
+build_tool: tsup
+test_framework: vitest
+package_manager: npm
+
+dependencies:
+  production: []
+  peer:
+    - drivestash: "^0.x"
+  development:
+    - tsup: "^8.4.0"
+    - typescript: "^5.7.0"
+    - vitest: "^3.1.0"
+    - drivestash: "^0.x"
+
+publish:
+  registry: npmjs.com
+  scope: unscoped (drivestash-events)
+  format: ESM only
+  target: ES2022
+
+ci:
+  platform: GitHub Actions
+  checks:
+    - typecheck
+    - lint
+    - test
+    - build

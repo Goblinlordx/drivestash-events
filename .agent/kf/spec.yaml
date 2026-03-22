@@ -1,0 +1,93 @@
+version: 1
+snapshot_date: "2026-03-22"
+snapshot_after_tracks: []
+snapshot_after_ops:
+  - "20260322-init"
+items:
+  product.events.append:
+    title: "Append immutable events to a named event log"
+    type: product
+    priority: high
+    description: "Append immutable events to a named event log."
+    status: active
+    added_by: _init
+
+  product.events.replay:
+    title: "Replay events to derive current state via projections"
+    type: product
+    priority: high
+    description: "Replay events to derive current state via projection functions."
+    status: active
+    added_by: _init
+
+  product.events.query:
+    title: "Query events by type, time range, or custom filter"
+    type: product
+    priority: medium
+    description: "Query events by type, time range, or custom filter."
+    status: active
+    added_by: _init
+
+  product.events.sync:
+    title: "Sync event log between local and cloud via drivestash"
+    type: product
+    priority: high
+    description: "Sync event log between local and cloud via drivestash."
+    status: active
+    added_by: _init
+
+  product.events.subscribe:
+    title: "Subscribe to new events as they are appended"
+    type: product
+    priority: medium
+    description: "Subscribe to new events as they are appended."
+    status: active
+    added_by: _init
+
+  product.events.snapshot:
+    title: "Snapshot projected state to avoid full replay"
+    type: product
+    priority: low
+    description: "Snapshot projected state to avoid full replay on large event logs."
+    status: active
+    added_by: _init
+
+  tech.events.append-only:
+    title: "Events are immutable — no update or delete on log entries"
+    type: technical
+    priority: high
+    description: "Events are immutable — no update or delete on log entries."
+    status: active
+    added_by: _init
+
+  tech.events.ordered:
+    title: "Events maintain causal ordering via monotonic timestamps"
+    type: technical
+    priority: high
+    description: "Events maintain causal ordering via monotonic timestamps."
+    status: active
+    added_by: _init
+
+  tech.build.esm-only:
+    title: "ESM-only package targeting ES2022 browsers"
+    type: technical
+    priority: high
+    description: "ESM-only package targeting ES2022 browsers."
+    status: active
+    added_by: _init
+
+  tech.deps.drivestash-peer:
+    title: "drivestash is a peer dependency, not bundled"
+    type: technical
+    priority: high
+    description: "drivestash is a peer dependency, not bundled."
+    status: active
+    added_by: _init
+
+  tech.deps.minimal:
+    title: "Zero additional runtime dependencies beyond drivestash"
+    type: technical
+    priority: high
+    description: "Zero additional runtime dependencies beyond drivestash."
+    status: active
+    added_by: _init
