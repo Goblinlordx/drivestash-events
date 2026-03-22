@@ -30,6 +30,8 @@ export interface EventLog<TPayload = unknown> {
   push(): Promise<void>
   /** Subscribe to sync status changes. Returns an unsubscribe function. */
   onStatusChange(listener: SyncStatusListener): () => void
+  /** Clear all local events and reset internal state. Use on logout. */
+  clear(): Promise<void>
   /** Clean up resources and event listeners. */
   destroy(): void
 }
@@ -184,6 +186,13 @@ export function createEventLog<TPayload = unknown>(
         unsub = engine.onStatusChange(listener)
       })
       return () => unsub?.()
+    },
+
+    async clear(): Promise<void> {
+      const eng = await ensureEngine()
+      await eng.clear()
+      knownIds.clear()
+      sequence = 0
     },
 
     destroy(): void {
