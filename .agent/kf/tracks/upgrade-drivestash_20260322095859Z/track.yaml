@@ -1,0 +1,40 @@
+id: upgrade-drivestash_20260322095859Z
+title: Upgrade drivestash to latest release
+type: chore
+status: pending
+created: '2026-03-22'
+updated: '2026-03-22'
+spec:
+  summary: Bump drivestash peer/dev dependency to latest version that adds internal bin format and compression. Verify all
+    tests pass and types remain compatible.
+  context: drivestash is releasing a new version with internal bin format and compression support. These are additive, non-breaking
+    changes with no new public API. drivestash-events uses drivestash as a peer dependency (^0.0.2) with type-only imports
+    (SyncEngine, SyncRecord, SyncStatusListener).
+  codebase_analysis: drivestash is imported in 9 files, all type-only imports. No runtime API calls to drivestash — only the
+    SyncEngine interface is used to construct EventLog instances. The peer dependency range is ^0.0.2. Since the new release
+    is additive with no API changes, the upgrade should be seamless — bump the version range, install, and verify.
+  acceptance_criteria:
+  - drivestash peer and dev dependency bumped to latest release version
+  - All existing tests pass without modification
+  - TypeScript typecheck passes cleanly
+  - Package builds successfully via tsup
+  out_of_scope: Adopting bin format for event serialization (separate feature track if desired). Changing any public API of
+    drivestash-events.
+  technical_notes: Bump both peerDependencies and devDependencies drivestash version in package.json. Run npm install to update
+    lock file. Run full test suite (vitest run), typecheck (tsc --noEmit), and build (tsup) to verify compatibility.
+plan:
+  - phase: Upgrade
+    tasks:
+      - text: Bump drivestash version in peerDependencies and devDependencies in package.json
+        done: false
+      - text: Run npm install to update package-lock.json
+        done: false
+  - phase: Verification
+    tasks:
+      - text: Run typecheck (tsc --noEmit) and fix any type errors
+        done: false
+      - text: Run full test suite (vitest run) and fix any failures
+        done: false
+      - text: Run build (tsup) and verify dist output
+        done: false
+extra: {}
