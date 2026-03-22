@@ -13,16 +13,16 @@ Store immutable events locally in IndexedDB, sync them to Google Drive, and deri
 - **Queries** — filter events by type, time range, or custom predicate
 - **Subscriptions** — react to new events from local appends or remote sync
 - **Offline-first** — all writes go to IndexedDB immediately, sync when online
-- **Zero dependencies** — only [drivestash](https://www.npmjs.com/package/drivestash) as a peer dependency
+- **Zero extra dependencies** — only [drivestash](https://www.npmjs.com/package/drivestash) (bundled automatically)
 - **Type-safe** — full TypeScript with generics for event payloads
 
 ## Installation
 
 ```bash
-npm install drivestash-events drivestash
+npm install drivestash-events
 ```
 
-`drivestash` is a peer dependency — you must install it alongside this package.
+That's it — `drivestash` is included as a dependency and installed automatically.
 
 ## Quick Start
 
@@ -341,7 +341,7 @@ Your App
   └── drivestash-events (this library)
         ├── EventLog — append, list, project, query, subscribe
         ├── unionMerge — append-only conflict resolution
-        └── drivestash (peer dependency)
+        └── drivestash (bundled dependency)
               ├── IndexedDB — local offline storage
               └── Google Drive appDataFolder — cloud sync
 ```
