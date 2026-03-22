@@ -1,0 +1,47 @@
+id: eventlog-clear-remote_20260322132029Z
+title: Add clearRemote() method to EventLog
+type: feature
+status: pending
+created: '2026-03-22'
+updated: '2026-03-22'
+spec:
+  summary: Upgrade drivestash to ^0.3.0, add clearRemote() to EventLog that wipes local IndexedDB and deletes the Drive file.
+    Update docs with data deletion usage pattern.
+  context: drivestash v0.3.0 adds clearRemote() to SyncEngine which wipes local IndexedDB AND deletes the Drive file. This
+    is for full data deletion (not recoverable), unlike clear() which only wipes local (data restored on next sync).
+  codebase_analysis: EventLog already has clear() that delegates to engine.clear(). clearRemote() follows the same pattern
+    — delegate to engine.clearRemote(), reset knownIds and sequence. The mock engines in 4 test files need clearRemote added.
+  acceptance_criteria:
+  - drivestash upgraded to ^0.3.0
+  - 'EventLog interface includes clearRemote(): Promise<void>'
+  - clearRemote() delegates to engine.clearRemote() and resets internal state
+  - Unit tests cover clearRemote() behavior
+  - README documents clear vs clearRemote and data deletion pattern
+  out_of_scope: Changes to drivestash itself. Automatic data deletion flows.
+  technical_notes: Bump drivestash to ^0.3.0. Add clearRemote() to EventLog interface and implementation (same pattern as
+    clear). Update mock engines in tests. Add tests for clearRemote. Update README with clear vs clearRemote comparison and
+    data deletion pattern.
+plan:
+  - phase: Dependency Upgrade
+    tasks:
+      - text: Bump drivestash to ^0.3.0 and npm install
+        done: false
+      - text: Verify clearRemote() exists on SyncEngine types
+        done: false
+  - phase: Implementation (TDD)
+    tasks:
+      - text: Add clearRemote to mock engines in all 4 test files and write clearRemote() tests
+        done: false
+      - text: Add clearRemote() to EventLog interface and implement in createEventLog
+        done: false
+      - text: Verify all tests pass
+        done: false
+  - phase: Documentation
+    tasks:
+      - text: Update README with clearRemote() API reference and clear vs clearRemote comparison
+        done: false
+      - text: Update logout usage pattern to show both clear and clearRemote options
+        done: false
+      - text: Update the When NOT to Use limitations table if needed
+        done: false
+extra: {}
