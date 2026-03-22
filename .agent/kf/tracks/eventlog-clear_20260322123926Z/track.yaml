@@ -1,0 +1,51 @@
+id: eventlog-clear_20260322123926Z
+title: Add clear() method to EventLog
+type: feature
+status: pending
+created: '2026-03-22'
+updated: '2026-03-22'
+spec:
+  summary: Add clear() to EventLog that wipes local IndexedDB state via engine.clear(), resets internal state (knownIds, sequence),
+    and documents the logout flow. Prevents data leaks between users/accounts.
+  context: When a user logs out, their events remain in IndexedDB. The next user on the same device could see them, or they
+    could sync to a different account on re-login. EventLog needs a clear() method to wipe local state on logout. Depends
+    on drivestash adding clear() to SyncEngine (upcoming release).
+  codebase_analysis: 'EventLog (src/event-log.ts) has internal state: knownIds (Set<string>), sequence (number), subscribers
+    (Set). The destroy() method only clears listeners, not stored data. drivestash LocalStore has clear() internally but SyncEngine
+    does not expose it. Once drivestash ships clear() on SyncEngine, EventLog can delegate to it.'
+  acceptance_criteria:
+  - 'EventLog interface includes clear(): Promise<void>'
+  - clear() wipes all events from local IndexedDB via engine.clear()
+  - clear() resets internal knownIds and sequence to initial state
+  - Unit tests cover clear() behavior
+  - README documents logout/clear usage pattern
+  - drivestash dependency bumped to version with SyncEngine.clear()
+  out_of_scope: Adding clear() to drivestash itself (separate repo). Remote Drive file deletion (clear is local-only). Automatic
+    clear on token change.
+  technical_notes: Add clear() to the EventLog interface and implementation. Delegate to engine.clear(), then reset knownIds
+    and sequence to initial state. Must await engineReady before clearing. Update README with logout usage pattern. Requires
+    upgrading drivestash dependency to the version that exposes clear() on SyncEngine.
+plan:
+  - phase: Dependency Upgrade
+    tasks:
+      - text: Bump drivestash dependency to version with SyncEngine.clear()
+        done: false
+      - text: Run npm install and verify types include clear() on SyncEngine
+        done: false
+  - phase: Implementation (TDD)
+    tasks:
+      - text: Add clear() tests to event-log.test.ts (mock engine.clear, verify knownIds/sequence reset, verify list returns empty after clear)
+        done: false
+      - text: Add clear() to EventLog interface in event-log.ts
+        done: false
+      - text: Implement clear() in createEventLog — await engine.clear(), reset knownIds and sequence
+        done: false
+      - text: Verify all tests pass
+        done: false
+  - phase: Documentation
+    tasks:
+      - text: Add clear() to API Reference section in README
+        done: false
+      - text: Add logout usage pattern example to README
+        done: false
+extra: {}
