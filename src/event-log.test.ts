@@ -23,6 +23,7 @@ function createMockEngine(): MockEngine {
       return () => { listeners.delete(listener) }
     }),
     clear: vi.fn(async () => { records.clear() }),
+    clearRemote: vi.fn(async () => { records.clear() }),
     destroy: vi.fn(),
   }
 }
@@ -205,5 +206,42 @@ describe('EventLog.clear', () => {
     await log.clear()
     const events = await log.list()
     expect(events).toEqual([])
+  })
+})
+
+describe('EventLog.clearRemote', () => {
+  let engine: MockEngine
+  let log: ReturnType<typeof createEventLog>
+
+  beforeEach(() => {
+    engine = createMockEngine()
+    log = createEventLog({
+      storeName: 'test',
+      getAccessToken: () => null,
+      deviceId: 'device-1',
+    }, { engine })
+  })
+
+  it('delegates to engine.clearRemote()', async () => {
+    await log.clearRemote()
+    expect(engine.clearRemote).toHaveBeenCalledOnce()
+  })
+
+  it('wipes all events from local store', async () => {
+    await log.append('a', { v: 1 })
+    await log.append('b', { v: 2 })
+    expect((await log.list()).length).toBe(2)
+
+    await log.clearRemote()
+    expect((await log.list()).length).toBe(0)
+  })
+
+  it('resets sequence counter after clearRemote', async () => {
+    await log.append('a', {})
+    await log.append('b', {})
+    await log.clearRemote()
+
+    const event = await log.append('c', {})
+    expect(event.metadata.sequence).toBe(1)
   })
 })

@@ -21,6 +21,7 @@ function createMockEngine(): MockEngine {
       return () => {}
     }),
     clear: vi.fn(async () => { records.clear() }),
+    clearRemote: vi.fn(async () => { records.clear() }),
     destroy: vi.fn(),
   }
 }

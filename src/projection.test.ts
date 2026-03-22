@@ -102,6 +102,7 @@ function createMockEngine(): SyncEngine<EventRecord> & { _records: Map<string, E
     push: vi.fn(async () => {}),
     onStatusChange: vi.fn((_l: SyncStatusListener) => () => {}),
     clear: vi.fn(async () => { records.clear() }),
+    clearRemote: vi.fn(async () => { records.clear() }),
     destroy: vi.fn(),
   }
 }

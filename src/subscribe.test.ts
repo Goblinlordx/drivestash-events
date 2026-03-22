@@ -32,6 +32,7 @@ function createMockEngine(): MockEngine {
     push: vi.fn(async () => {}),
     onStatusChange: vi.fn((_l: SyncStatusListener) => () => {}),
     clear: vi.fn(async () => { records.clear() }),
+    clearRemote: vi.fn(async () => { records.clear() }),
     destroy: vi.fn(),
   }
 }
