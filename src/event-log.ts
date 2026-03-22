@@ -32,6 +32,8 @@ export interface EventLog<TPayload = unknown> {
   onStatusChange(listener: SyncStatusListener): () => void
   /** Clear all local events and reset internal state. Use on logout. */
   clear(): Promise<void>
+  /** Clear all local events AND delete the remote Drive file. Not recoverable. */
+  clearRemote(): Promise<void>
   /** Clean up resources and event listeners. */
   destroy(): void
 }
@@ -191,6 +193,13 @@ export function createEventLog<TPayload = unknown>(
     async clear(): Promise<void> {
       const eng = await ensureEngine()
       await eng.clear()
+      knownIds.clear()
+      sequence = 0
+    },
+
+    async clearRemote(): Promise<void> {
+      const eng = await ensureEngine()
+      await eng.clearRemote()
       knownIds.clear()
       sequence = 0
     },
