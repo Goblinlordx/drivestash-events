@@ -33,7 +33,9 @@ function encodeRandom(): string {
  * Format: 10 chars timestamp (ms) + 16 chars random = 26 chars total.
  * ULIDs sort lexicographically by creation time, making them ideal for
  * event log ordering without needing a separate timestamp comparison.
+ *
+ * @param ms - Millisecond timestamp to encode. Defaults to Date.now().
  */
-export function createEventId(): string {
-  return encodeTime(Date.now()) + encodeRandom()
+export function createEventId(ms?: number): string {
+  return encodeTime(ms ?? Date.now()) + encodeRandom()
 }

@@ -51,6 +51,7 @@ export function createEventLog<TPayload = unknown>(
   config: EventLogConfig<TPayload>,
 ): EventLog<TPayload> {
   const deviceId = config.deviceId ?? getDeviceId()
+  const clock = config.clock ?? { now: () => Date.now() }
   let sequence = 0
   const subscribers = new Set<EventListener<TPayload>>()
   const knownIds = new Set<string>()
@@ -114,9 +115,10 @@ export function createEventLog<TPayload = unknown>(
     async append(type: string, payload: TPayload): Promise<EventRecord<TPayload>> {
       const eng = await ensureEngine()
       sequence += 1
-      const timestamp = new Date().toISOString()
+      const now = clock.now()
+      const timestamp = new Date(now).toISOString()
       const event: EventRecord<TPayload> = {
-        id: createEventId(),
+        id: createEventId(now),
         updatedAt: timestamp,
         type,
         payload,

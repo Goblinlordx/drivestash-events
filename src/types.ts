@@ -42,6 +42,12 @@ export interface EventQuery<TPayload = unknown> {
   filter?: (event: EventRecord<TPayload>) => boolean
 }
 
+/** Clock interface for injectable time. Defaults to system clock (Date.now). */
+export interface Clock {
+  /** Returns current time in milliseconds since epoch. */
+  now(): number
+}
+
 /** Configuration for creating an EventLog instance. */
 export interface EventLogConfig<TPayload = unknown> {
   /** Name for the underlying drivestash store. */
@@ -52,4 +58,6 @@ export interface EventLogConfig<TPayload = unknown> {
   deviceId?: string
   /** Optional pre-configured SyncEngine. Useful for testing with mocks or custom storage. */
   engine?: SyncEngine<EventRecord<TPayload>>
+  /** Optional clock for injectable time. Defaults to system clock. */
+  clock?: Clock
 }
