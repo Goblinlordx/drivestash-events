@@ -20,16 +20,16 @@ spec:
   technical_notes: Bump version in package.json to 0.1.0. Run npm publish which triggers prepublishOnly (typecheck + test
     + build).
 plan:
-  - phase: Release
-    tasks:
-      - text: Bump version to 0.1.0 in package.json
-        done: false
-      - text: Commit version bump
-        done: false
-  - phase: Publish
-    tasks:
-      - text: Run npm publish (triggers prepublishOnly verification)
-        done: false
-      - text: Verify package is live on npmjs.com
-        done: false
+- phase: Release
+  tasks:
+  - text: Bump version to 0.1.0 in package.json
+    done: true
+  - text: Commit version bump
+    done: true
+- phase: Publish
+  tasks:
+  - text: Run npm publish (triggers prepublishOnly verification)
+    done: true
+  - text: Verify package is live on npmjs.com
+    done: true
 extra: {}
