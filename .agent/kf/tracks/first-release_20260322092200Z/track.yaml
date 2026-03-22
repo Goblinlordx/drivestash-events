@@ -1,68 +1,91 @@
 id: first-release_20260322092200Z
-title: "Create GitHub repo, initial publish, and first automated release"
+title: Create GitHub repo, initial publish, and first automated release
 type: chore
 status: pending
 created: 2026-03-22
-updated: 2026-03-22
+updated: '2026-03-22'
 spec:
-  summary: |
-    Create the GitHub repo, push code, do initial npm publish, pause for
+  summary: 'Create the GitHub repo, push code, do initial npm publish, pause for
+
     user to configure Trusted Publisher on npm, then create a GH release
+
     to verify the automated publish workflow.
-  context: |
-    All code, docs, and CI/CD workflows are complete and merged to main.
+
+    '
+  context: 'All code, docs, and CI/CD workflows are complete and merged to main.
+
     No GitHub remote exists yet. The user wants to:
+
     1. Create the GH repo and push
+
     2. Do initial npm publish manually
+
     3. Set up Trusted Publisher on npm (manual step)
+
     4. Create a GH release to trigger automated publish
-  codebase_analysis: |
-    - No git remote configured
+
+    '
+  codebase_analysis: '- No git remote configured
+
     - gh CLI authenticated as Goblinlordx
+
     - .github/workflows/ci.yml and publish.yml exist
+
     - package.json has repository field pointing to Goblinlordx/drivestash-events
+
     - prepublishOnly runs typecheck + test + build
+
     - .npmignore configured for clean 5-file package
+
     - package version is 0.0.1
+
+    '
   acceptance_criteria:
-    - GitHub repo Goblinlordx/drivestash-events exists and is public
-    - Code is pushed to main on GitHub
-    - CI workflow runs successfully on push
-    - Package is published to npm as drivestash-events@0.0.1
-    - Trusted Publisher is configured (user manual step)
-    - A GitHub release v0.0.1 exists and triggered the publish workflow
-  out_of_scope: |
-    - Version bumping automation
+  - GitHub repo Goblinlordx/drivestash-events exists and is public
+  - Code is pushed to main on GitHub
+  - CI workflow runs successfully on push
+  - Package is published to npm as drivestash-events@0.0.1
+  - Trusted Publisher is configured (user manual step)
+  - A GitHub release v0.0.1 exists and triggered the publish workflow
+  out_of_scope: '- Version bumping automation
+
     - Release notes generation
+
     - npm scope changes
-  technical_notes: |
-    The developer will use gh CLI and npm CLI directly. The Trusted
+
+    '
+  technical_notes: 'The developer will use gh CLI and npm CLI directly. The Trusted
+
     Publisher setup is a manual step on npmjs.com that the user must
+
     complete — the developer should HALT and wait for confirmation
+
     before proceeding to the GH release step.
+
+    '
 plan:
-  - phase: "GitHub repo setup"
-    tasks:
-      - text: "Create public GitHub repo Goblinlordx/drivestash-events via gh CLI"
-        done: false
-      - text: "Add remote origin and push main branch"
-        done: false
-      - text: "Verify CI workflow triggers and passes on GitHub"
-        done: false
-  - phase: "Initial npm publish"
-    tasks:
-      - text: "Run npm publish --access public for initial v0.0.1 release"
-        done: false
-      - text: "Verify package is visible on npmjs.com/package/drivestash-events"
-        done: false
-  - phase: "Trusted Publisher setup (user manual step)"
-    tasks:
-      - text: "HALT and ask user to configure Trusted Publisher on npm for this repo"
-        done: false
-  - phase: "First automated release"
-    tasks:
-      - text: "Create GitHub release v0.0.1 to trigger publish workflow"
-        done: false
-      - text: "Verify publish workflow completes successfully on GitHub Actions"
-        done: false
+- phase: GitHub repo setup
+  tasks:
+  - text: Create public GitHub repo Goblinlordx/drivestash-events via gh CLI
+    done: true
+  - text: Add remote origin and push main branch
+    done: true
+  - text: Verify CI workflow triggers and passes on GitHub
+    done: true
+- phase: Initial npm publish
+  tasks:
+  - text: Run npm publish --access public for initial v0.0.1 release
+    done: true
+  - text: Verify package is visible on npmjs.com/package/drivestash-events
+    done: true
+- phase: Trusted Publisher setup (user manual step)
+  tasks:
+  - text: HALT and ask user to configure Trusted Publisher on npm for this repo
+    done: true
+- phase: First automated release
+  tasks:
+  - text: Create GitHub release v0.0.1 to trigger publish workflow
+    done: true
+  - text: Verify publish workflow completes successfully on GitHub Actions
+    done: true
 extra: {}
