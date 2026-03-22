@@ -1,0 +1,9 @@
+src/
+*.test.ts
+.agent/
+.github/
+.gitignore
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+CHANGELOG.md
