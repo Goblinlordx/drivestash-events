@@ -78,7 +78,7 @@ describe('EventLog.subscribe', () => {
     await log.append('c', {})
 
     expect(listener).toHaveBeenCalledTimes(3)
-    expect(listener.mock.calls.map((c: [EventRecord]) => c[0].type)).toEqual(['a', 'b', 'c'])
+    expect(listener.mock.calls.map((c) => (c[0] as EventRecord).type)).toEqual(['a', 'b', 'c'])
   })
 
   it('unsubscribe stops notifications', async () => {
