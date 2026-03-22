@@ -45,7 +45,7 @@
   ],
   "author": "Goblinlordx",
   "dependencies": {
-    "drivestash": "^0.2.0"
+    "drivestash": "^0.3.0"
   },
   "devDependencies": {
     "tsup": "^8.4.0",
