@@ -22,26 +22,26 @@ spec:
     clear). Update mock engines in tests. Add tests for clearRemote. Update README with clear vs clearRemote comparison and
     data deletion pattern.
 plan:
-  - phase: Dependency Upgrade
-    tasks:
-      - text: Bump drivestash to ^0.3.0 and npm install
-        done: false
-      - text: Verify clearRemote() exists on SyncEngine types
-        done: false
-  - phase: Implementation (TDD)
-    tasks:
-      - text: Add clearRemote to mock engines in all 4 test files and write clearRemote() tests
-        done: false
-      - text: Add clearRemote() to EventLog interface and implement in createEventLog
-        done: false
-      - text: Verify all tests pass
-        done: false
-  - phase: Documentation
-    tasks:
-      - text: Update README with clearRemote() API reference and clear vs clearRemote comparison
-        done: false
-      - text: Update logout usage pattern to show both clear and clearRemote options
-        done: false
-      - text: Update the When NOT to Use limitations table if needed
-        done: false
+- phase: Dependency Upgrade
+  tasks:
+  - text: Bump drivestash to ^0.3.0 and npm install
+    done: true
+  - text: Verify clearRemote() exists on SyncEngine types
+    done: true
+- phase: Implementation (TDD)
+  tasks:
+  - text: Add clearRemote to mock engines in all 4 test files and write clearRemote() tests
+    done: true
+  - text: Add clearRemote() to EventLog interface and implement in createEventLog
+    done: true
+  - text: Verify all tests pass
+    done: true
+- phase: Documentation
+  tasks:
+  - text: Update README with clearRemote() API reference and clear vs clearRemote comparison
+    done: true
+  - text: Update logout usage pattern to show both clear and clearRemote options
+    done: true
+  - text: Update the When NOT to Use limitations table if needed
+    done: true
 extra: {}
