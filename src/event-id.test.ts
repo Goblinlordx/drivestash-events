@@ -26,13 +26,10 @@ describe('createEventId', () => {
     expect(first < second).toBe(true)
   })
 
-  it('IDs created at same millisecond share timestamp prefix', () => {
+  it('IDs created in quick succession have similar timestamp prefixes', () => {
     const ids = Array.from({ length: 10 }, () => createEventId())
-    const prefix = ids[0].slice(0, 10)
-    // All IDs generated in quick succession should share the same 10-char timestamp
-    // (within the same millisecond)
-    for (const id of ids) {
-      expect(id.slice(0, 10)).toBe(prefix)
-    }
+    // At most 2 distinct prefixes (if we cross a millisecond boundary)
+    const prefixes = new Set(ids.map((id) => id.slice(0, 10)))
+    expect(prefixes.size).toBeLessThanOrEqual(2)
   })
 })

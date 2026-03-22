@@ -30,6 +30,18 @@ export interface EventRecord<TPayload = unknown> extends SyncRecord {
   readonly metadata: EventMetadata
 }
 
+/** Query filter for retrieving a subset of events. */
+export interface EventQuery<TPayload = unknown> {
+  /** Filter by exact event type match. */
+  type?: string
+  /** Include only events after this ISO timestamp (exclusive). */
+  after?: string
+  /** Include only events before this ISO timestamp (exclusive). */
+  before?: string
+  /** Custom predicate filter. */
+  filter?: (event: EventRecord<TPayload>) => boolean
+}
+
 /** Configuration for creating an EventLog instance. */
 export interface EventLogConfig {
   /** Name for the underlying drivestash store. */
