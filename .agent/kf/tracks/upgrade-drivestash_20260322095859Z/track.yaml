@@ -23,18 +23,18 @@ spec:
   technical_notes: Bump both peerDependencies and devDependencies drivestash version in package.json. Run npm install to update
     lock file. Run full test suite (vitest run), typecheck (tsc --noEmit), and build (tsup) to verify compatibility.
 plan:
-  - phase: Upgrade
-    tasks:
-      - text: Bump drivestash version in peerDependencies and devDependencies in package.json
-        done: false
-      - text: Run npm install to update package-lock.json
-        done: false
-  - phase: Verification
-    tasks:
-      - text: Run typecheck (tsc --noEmit) and fix any type errors
-        done: false
-      - text: Run full test suite (vitest run) and fix any failures
-        done: false
-      - text: Run build (tsup) and verify dist output
-        done: false
+- phase: Upgrade
+  tasks:
+  - text: Bump drivestash version in peerDependencies and devDependencies in package.json
+    done: true
+  - text: Run npm install to update package-lock.json
+    done: true
+- phase: Verification
+  tasks:
+  - text: Run typecheck (tsc --noEmit) and fix any type errors
+    done: true
+  - text: Run full test suite (vitest run) and fix any failures
+    done: true
+  - text: Run build (tsup) and verify dist output
+    done: true
 extra: {}
