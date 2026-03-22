@@ -26,26 +26,27 @@ spec:
     and sequence to initial state. Must await engineReady before clearing. Update README with logout usage pattern. Requires
     upgrading drivestash dependency to the version that exposes clear() on SyncEngine.
 plan:
-  - phase: Dependency Upgrade
-    tasks:
-      - text: Bump drivestash dependency to version with SyncEngine.clear()
-        done: false
-      - text: Run npm install and verify types include clear() on SyncEngine
-        done: false
-  - phase: Implementation (TDD)
-    tasks:
-      - text: Add clear() tests to event-log.test.ts (mock engine.clear, verify knownIds/sequence reset, verify list returns empty after clear)
-        done: false
-      - text: Add clear() to EventLog interface in event-log.ts
-        done: false
-      - text: Implement clear() in createEventLog — await engine.clear(), reset knownIds and sequence
-        done: false
-      - text: Verify all tests pass
-        done: false
-  - phase: Documentation
-    tasks:
-      - text: Add clear() to API Reference section in README
-        done: false
-      - text: Add logout usage pattern example to README
-        done: false
+- phase: Dependency Upgrade
+  tasks:
+  - text: Bump drivestash dependency to version with SyncEngine.clear()
+    done: true
+  - text: Run npm install and verify types include clear() on SyncEngine
+    done: true
+- phase: Implementation (TDD)
+  tasks:
+  - text: Add clear() tests to event-log.test.ts (mock engine.clear, verify knownIds/sequence reset, verify list returns empty
+      after clear)
+    done: true
+  - text: Add clear() to EventLog interface in event-log.ts
+    done: true
+  - text: Implement clear() in createEventLog — await engine.clear(), reset knownIds and sequence
+    done: true
+  - text: Verify all tests pass
+    done: true
+- phase: Documentation
+  tasks:
+  - text: Add clear() to API Reference section in README
+    done: true
+  - text: Add logout usage pattern example to README
+    done: true
 extra: {}
