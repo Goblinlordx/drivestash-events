@@ -1,0 +1,13 @@
+title: Project scaffold and core event types
+status: pending
+type: chore
+approved: false
+created: '2026-03-22'
+updated: '2026-03-22'
+spec_refs:
+- action: constrained-by
+  item: tech.build.esm-only
+- action: constrained-by
+  item: tech.deps.drivestash-peer
+- action: constrained-by
+  item: tech.deps.minimal

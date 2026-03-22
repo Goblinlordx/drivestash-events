@@ -1,0 +1,17 @@
+title: Append-only event log with multi-device sync
+status: pending
+type: feature
+approved: false
+created: '2026-03-22'
+updated: '2026-03-22'
+deps:
+- scaffold_20260322083200Z
+spec_refs:
+- action: required-for
+  item: product.events.append
+- action: required-for
+  item: product.events.sync
+- action: constrained-by
+  item: tech.events.append-only
+- action: constrained-by
+  item: tech.events.ordered

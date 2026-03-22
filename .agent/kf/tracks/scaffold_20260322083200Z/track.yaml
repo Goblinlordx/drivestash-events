@@ -1,0 +1,94 @@
+id: scaffold_20260322083200Z
+title: "Project scaffold and core event types"
+type: chore
+status: pending
+created: 2026-03-22
+updated: 2026-03-22
+spec:
+  summary: |
+    Initialize npm package with drivestash peer dep, TypeScript toolchain
+    (tsup, vitest), and core event type definitions that all subsequent
+    tracks build on.
+  context: |
+    drivestash-events is a new library with zero source code. It provides
+    an append-only event log on top of drivestash (offline-first sync engine
+    using IndexedDB + Google Drive). This track sets up the project
+    foundation: package.json, build tooling, test framework, and the core
+    type system that defines what an "event" is in this library.
+
+    The trip-planning project's stamp system (add/remove ops projected to
+    progress/score) serves as the reference architecture. drivestash is
+    published on npm and will be a peer dependency.
+  codebase_analysis: |
+    - No source code exists yet — only .agent/kf/ setup artifacts
+    - Tech stack defined: TypeScript, ESM-only, ES2022+, tsup, vitest, npm
+    - drivestash exports: createSyncEngine<T>, SyncRecord {id, updatedAt},
+      SyncEngine<T> (get/put/delete/list/sync/pull/push), lwwMerge, MergeFn
+    - drivestash SyncRecord requires {id: string, updatedAt: string}
+    - Events must extend SyncRecord to be storable via drivestash
+  acceptance_criteria:
+    - "npm install succeeds with drivestash as peer dependency"
+    - "npm run build produces ESM bundle targeting ES2022"
+    - "npm run test runs vitest successfully (even with zero tests initially)"
+    - "npm run typecheck passes with strict TypeScript"
+    - "Core event types (EventRecord, EventMetadata) are exported from src/index.ts"
+    - "EventRecord extends SyncRecord from drivestash"
+    - "Event ID generation uses crypto.randomUUID()"
+  out_of_scope: |
+    - EventLog class implementation (track 2)
+    - Sync logic or merge strategies (track 2)
+    - Projections, queries, subscriptions (track 3)
+    - CI/CD pipeline (future track)
+    - Publishing to npm (future track)
+  technical_notes: |
+    EventRecord must extend drivestash's SyncRecord interface so events can
+    be stored directly in a SyncEngine. The key design:
+
+      interface EventRecord<TPayload = unknown> extends SyncRecord {
+        readonly id: string           // crypto.randomUUID()
+        readonly updatedAt: string    // ISO 8601, set once at creation
+        readonly type: string         // event type discriminator
+        readonly payload: TPayload    // event-specific data
+        readonly metadata: EventMetadata
+      }
+
+      interface EventMetadata {
+        readonly deviceId: string     // identifies the originating device
+        readonly timestamp: string    // ISO 8601 creation time (= updatedAt)
+        readonly sequence: number     // per-device monotonic counter
+      }
+
+    The sequence field provides per-device ordering. Cross-device ordering
+    uses timestamp comparison with deviceId as tiebreaker. Events are
+    immutable — updatedAt is set once at creation and never changes, which
+    makes LWW merge equivalent to union merge for events.
+plan:
+  - phase: "Project initialization"
+    tasks:
+      - text: "Create package.json with name, version, ESM config, drivestash peer dep, dev deps (tsup, typescript, vitest)"
+        done: false
+      - text: "Create tsconfig.json with strict mode, ES2022 target, ESM module resolution"
+        done: false
+      - text: "Create tsup.config.ts for ESM-only build with .d.ts generation"
+        done: false
+      - text: "Create vitest.config.ts"
+        done: false
+  - phase: "Core type definitions"
+    tasks:
+      - text: "Write tests for EventRecord type structure and constraints (type-level tests)"
+        done: false
+      - text: "Define EventMetadata interface in src/types.ts (deviceId, timestamp, sequence)"
+        done: false
+      - text: "Define EventRecord<TPayload> interface extending SyncRecord in src/types.ts"
+        done: false
+      - text: "Define EventLogConfig interface in src/types.ts (storeName, getAccessToken, deviceId)"
+        done: false
+      - text: "Implement createEventId() using crypto.randomUUID() in src/event-id.ts"
+        done: false
+  - phase: "Exports and verification"
+    tasks:
+      - text: "Create src/index.ts barrel export with all public types and utilities"
+        done: false
+      - text: "Verify build, typecheck, and test all pass"
+        done: false
+extra: {}

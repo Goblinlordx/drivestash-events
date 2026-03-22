@@ -1,0 +1,122 @@
+id: event-log_20260322083201Z
+title: "Append-only event log with multi-device sync"
+type: feature
+status: pending
+created: 2026-03-22
+updated: 2026-03-22
+spec:
+  summary: |
+    EventLog class wrapping drivestash SyncEngine with a custom union merge
+    that guarantees append-only semantics and safe multi-device usage
+    without clobbering.
+  context: |
+    This is the core of drivestash-events. The EventLog provides a simple
+    interface for appending immutable events that sync safely across
+    devices via drivestash. The key insight: since events are never
+    modified (updatedAt is set once), drivestash's LWW merge is equivalent
+    to union merge — but we use an explicit union merge for clarity and
+    safety.
+
+    The trip-planning project's stamp system demonstrated the pattern:
+    optimistic local writes, pending queue for offline, union merge on
+    sync. drivestash-events generalizes this into a reusable library.
+  codebase_analysis: |
+    - drivestash createSyncEngine<T> accepts a custom merge function
+    - SyncEngine provides put/list/sync/pull/push/onStatusChange/destroy
+    - Default lwwMerge compares updatedAt — since events are immutable,
+      this works as union merge, but an explicit union merge is safer
+    - drivestash auto-syncs on online/visibility events
+    - LocalStore uses IndexedDB with id as keyPath
+    - DriveAdapter stores one JSON blob per storeName in appDataFolder
+    - No tombstone support in drivestash — events are append-only so
+      this limitation is actually a feature (events are never deleted)
+  acceptance_criteria:
+    - "EventLog.append(type, payload) creates and persists an immutable event"
+    - "Appended events have unique IDs, monotonic timestamps, and device-scoped sequence numbers"
+    - "Events cannot be modified or deleted after append (API enforces immutability)"
+    - "Custom union merge combines events from multiple devices without data loss"
+    - "EventLog.list() returns all events ordered by timestamp then deviceId"
+    - "EventLog.sync()/pull()/push() delegate to underlying drivestash engine"
+    - "EventLog.onStatusChange() exposes sync status"
+    - "EventLog.destroy() cleans up resources"
+    - "Two simulated devices appending concurrently produce a merged log with all events"
+  out_of_scope: |
+    - Projections / replay (track 3)
+    - Querying / filtering events (track 3)
+    - Subscriptions to new events (track 3)
+    - Snapshots (future track)
+    - Real-time streaming between clients
+  technical_notes: |
+    Architecture:
+
+      EventLog<TPayload>
+        ├── wraps createSyncEngine<EventRecord<TPayload>>()
+        ├── custom merge: unionMerge (merge by unique ID, keep all)
+        ├── append(type, payload) → EventRecord
+        ├── list() → EventRecord[] (sorted by timestamp, deviceId)
+        ├── sync() / pull() / push()
+        ├── onStatusChange(listener) → unsubscribe
+        └── destroy()
+
+    Union merge implementation:
+      function unionMerge<T extends SyncRecord>(local: T[], remote: T[]): T[] {
+        const merged = new Map<string, T>()
+        for (const r of local) merged.set(r.id, r)
+        for (const r of remote) merged.set(r.id, r)  // no overwrite needed — same id = same event
+        return Array.from(merged.values())
+      }
+
+    This is safe because:
+    1. Event IDs are globally unique (crypto.randomUUID)
+    2. Events are immutable (same ID = identical content)
+    3. Two devices can never produce the same UUID
+
+    Per-device sequence counter:
+    - Maintained in a separate "meta" record or derived from local event count
+    - Provides total ordering within a single device
+    - Cross-device ordering: compare timestamp, break ties with deviceId
+
+    Device ID:
+    - Generated once per browser instance via crypto.randomUUID()
+    - Stored in localStorage (persists across sessions)
+    - Passed via EventLogConfig or auto-generated
+plan:
+  - phase: "Union merge strategy"
+    tasks:
+      - text: "Write tests for unionMerge: disjoint sets, overlapping IDs, empty arrays"
+        done: false
+      - text: "Implement unionMerge<T extends SyncRecord> in src/union-merge.ts"
+        done: false
+  - phase: "Device identity"
+    tasks:
+      - text: "Write tests for getDeviceId: generation, persistence, retrieval"
+        done: false
+      - text: "Implement getDeviceId() in src/device-id.ts (crypto.randomUUID + localStorage)"
+        done: false
+  - phase: "EventLog core"
+    tasks:
+      - text: "Write tests for EventLog.append: creates valid EventRecord, assigns ID/timestamp/sequence"
+        done: false
+      - text: "Write tests for EventLog.list: returns events sorted by timestamp then deviceId"
+        done: false
+      - text: "Write tests for immutability: EventLog exposes no update/delete methods"
+        done: false
+      - text: "Implement createEventLog<TPayload>(config) factory in src/event-log.ts"
+        done: false
+      - text: "Implement append(type, payload) method — creates EventRecord, calls engine.put()"
+        done: false
+      - text: "Implement list() method — calls engine.list(), sorts by timestamp/deviceId"
+        done: false
+      - text: "Wire sync()/pull()/push()/onStatusChange()/destroy() to underlying engine"
+        done: false
+  - phase: "Multi-device safety verification"
+    tasks:
+      - text: "Write integration test: two EventLog instances (different deviceIds) append to same store"
+        done: false
+      - text: "Write integration test: simulate sync merge — verify all events from both devices present"
+        done: false
+      - text: "Write integration test: verify event ordering is deterministic after merge"
+        done: false
+      - text: "Export createEventLog and unionMerge from src/index.ts"
+        done: false
+extra: {}

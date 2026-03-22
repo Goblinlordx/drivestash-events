@@ -1,0 +1,15 @@
+title: Projections, queries, and subscriptions
+status: pending
+type: feature
+approved: false
+created: '2026-03-22'
+updated: '2026-03-22'
+deps:
+- event-log_20260322083201Z
+spec_refs:
+- action: required-for
+  item: product.events.replay
+- action: required-for
+  item: product.events.query
+- action: required-for
+  item: product.events.subscribe
