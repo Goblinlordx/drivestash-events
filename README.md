@@ -73,6 +73,7 @@ const log = createEventLog<MyPayload>({
 | `getAccessToken` | `() => string \| null` | yes | Returns a Google OAuth2 token, or null |
 | `deviceId` | `string` | no | Device identifier. Auto-generated via `getDeviceId()` if omitted |
 | `engine` | `SyncEngine` | no | Custom SyncEngine instance. Bypasses default drivestash engine creation. Useful for testing or custom storage backends. |
+| `clock` | `Clock` | no | Custom clock (`{ now(): number }`). Controls timestamps in ULIDs and event metadata. Defaults to system clock. |
 
 ### `EventLog<TPayload>`
 
@@ -409,7 +410,31 @@ await log.append('test', { value: 42 })
 const events = await log.list() // works entirely in memory
 ```
 
-All drivestash types are re-exported from `drivestash-events` — no need to install drivestash as a separate dependency for type imports.
+### Controlling Time
+
+Inject a `clock` to control timestamps in tests — makes event ordering deterministic:
+
+```typescript
+let time = new Date('2026-01-01T00:00:00.000Z').getTime()
+
+const log = createEventLog({
+  storeName: 'test',
+  getAccessToken: () => null,
+  engine: createMockEngine(),
+  clock: { now: () => time },
+})
+
+const e1 = await log.append('first', {})
+time += 1000 // advance 1 second
+const e2 = await log.append('second', {})
+
+// Deterministic: e1 < e2 in ULID order, exact timestamps verifiable
+expect(e1.metadata.timestamp).toBe('2026-01-01T00:00:00.000Z')
+expect(e2.metadata.timestamp).toBe('2026-01-01T00:00:01.000Z')
+expect(e1.id < e2.id).toBe(true)
+```
+
+All drivestash types and `createSyncEngine` are re-exported from `drivestash-events` — no need to install drivestash as a separate dependency.
 
 ## How It Works
 
