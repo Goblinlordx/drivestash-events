@@ -1,6 +1,6 @@
 {
   "name": "drivestash-events",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Append-only event log with offline-first sync via drivestash",
   "type": "module",
   "main": "./dist/index.js",
