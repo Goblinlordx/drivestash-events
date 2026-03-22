@@ -18,7 +18,7 @@ export interface EventMetadata {
  * this makes LWW merge equivalent to union merge for events.
  */
 export interface EventRecord<TPayload = unknown> extends SyncRecord {
-  /** Globally unique event ID (crypto.randomUUID). */
+  /** Globally unique event ID (ULID — sortable by creation time). */
   readonly id: string
   /** ISO 8601 creation timestamp (same as metadata.timestamp). */
   readonly updatedAt: string
