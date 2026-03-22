@@ -31,6 +31,7 @@ function createMockEngine(): MockEngine {
     pull: vi.fn(async () => { applyStaged() }),
     push: vi.fn(async () => {}),
     onStatusChange: vi.fn((_l: SyncStatusListener) => () => {}),
+    clear: vi.fn(async () => { records.clear() }),
     destroy: vi.fn(),
   }
 }

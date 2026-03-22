@@ -20,6 +20,7 @@ function createMockEngine(): MockEngine {
     onStatusChange: vi.fn((listener: SyncStatusListener) => {
       return () => {}
     }),
+    clear: vi.fn(async () => { records.clear() }),
     destroy: vi.fn(),
   }
 }
