@@ -251,3 +251,74 @@ describe('EventLog.clearRemote', () => {
     expect(event.metadata.sequence).toBe(1)
   })
 })
+
+describe('EventLog.clock', () => {
+  it('uses injected clock for event timestamps', async () => {
+    const engine = createMockEngine()
+    const fixedTime = new Date('2026-06-15T12:00:00.000Z').getTime()
+    const log = createEventLog({
+      storeName: 'test',
+      getAccessToken: () => null,
+      deviceId: 'device-1',
+      engine,
+      clock: { now: () => fixedTime },
+    })
+
+    const event = await log.append('test', { v: 1 })
+    expect(event.metadata.timestamp).toBe('2026-06-15T12:00:00.000Z')
+    expect(event.updatedAt).toBe('2026-06-15T12:00:00.000Z')
+  })
+
+  it('uses injected clock for ULID timestamp component', async () => {
+    const engine = createMockEngine()
+    const fixedTime = new Date('2026-06-15T12:00:00.000Z').getTime()
+    const log = createEventLog({
+      storeName: 'test',
+      getAccessToken: () => null,
+      deviceId: 'device-1',
+      engine,
+      clock: { now: () => fixedTime },
+    })
+
+    const e1 = await log.append('a', {})
+    const e2 = await log.append('b', {})
+    // Same clock time → same ULID timestamp prefix (first 10 chars)
+    expect(e1.id.slice(0, 10)).toBe(e2.id.slice(0, 10))
+  })
+
+  it('advancing clock produces ordered ULIDs', async () => {
+    const engine = createMockEngine()
+    let time = new Date('2026-01-01T00:00:00.000Z').getTime()
+    const log = createEventLog({
+      storeName: 'test',
+      getAccessToken: () => null,
+      deviceId: 'device-1',
+      engine,
+      clock: { now: () => time },
+    })
+
+    const e1 = await log.append('first', {})
+    time += 1000 // advance 1 second
+    const e2 = await log.append('second', {})
+
+    // ULID sorts lexicographically by time
+    expect(e1.id < e2.id).toBe(true)
+  })
+
+  it('defaults to system clock when no clock provided', async () => {
+    const engine = createMockEngine()
+    const before = Date.now()
+    const log = createEventLog({
+      storeName: 'test',
+      getAccessToken: () => null,
+      deviceId: 'device-1',
+      engine,
+    })
+
+    const event = await log.append('test', {})
+    const after = Date.now()
+    const eventMs = new Date(event.metadata.timestamp).getTime()
+    expect(eventMs).toBeGreaterThanOrEqual(before)
+    expect(eventMs).toBeLessThanOrEqual(after)
+  })
+})

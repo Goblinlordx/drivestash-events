@@ -26,6 +26,16 @@ describe('createEventId', () => {
     expect(first < second).toBe(true)
   })
 
+  it('accepts explicit ms timestamp for deterministic IDs', () => {
+    const fixedMs = new Date('2026-01-01T00:00:00.000Z').getTime()
+    const id1 = createEventId(fixedMs)
+    const id2 = createEventId(fixedMs)
+    // Same timestamp → same 10-char prefix
+    expect(id1.slice(0, 10)).toBe(id2.slice(0, 10))
+    // Random suffix differs
+    expect(id1).not.toBe(id2)
+  })
+
   it('IDs created in quick succession have similar timestamp prefixes', () => {
     const ids = Array.from({ length: 10 }, () => createEventId())
     // At most 2 distinct prefixes (if we cross a millisecond boundary)
