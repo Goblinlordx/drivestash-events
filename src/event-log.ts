@@ -1,4 +1,4 @@
-import type { SyncEngine, SyncRecord, SyncStatusListener } from 'drivestash'
+import type { SyncEngine, SyncStatusListener } from 'drivestash'
 import type { EventRecord, EventLogConfig, EventQuery } from './types'
 import type { Projector } from './projection'
 import { project } from './projection'
@@ -38,36 +38,31 @@ export interface EventLog<TPayload = unknown> {
   destroy(): void
 }
 
-/** Internal options for dependency injection (testing). */
-interface InternalOptions<TPayload> {
-  engine?: SyncEngine<EventRecord<TPayload>>
-}
-
 /**
  * Create an append-only event log backed by drivestash.
  *
  * Events are immutable records with ULID IDs (sortable by creation time).
  * A custom union merge ensures no events are lost during multi-device sync.
  * The log exposes no update or delete operations — events are permanent.
+ *
+ * Pass `config.engine` to inject a custom SyncEngine (for testing or custom storage).
  */
 export function createEventLog<TPayload = unknown>(
-  config: EventLogConfig,
-  _internal?: InternalOptions<TPayload>,
+  config: EventLogConfig<TPayload>,
 ): EventLog<TPayload> {
   const deviceId = config.deviceId ?? getDeviceId()
   let sequence = 0
   const subscribers = new Set<EventListener<TPayload>>()
   const knownIds = new Set<string>()
 
-  // Use injected engine (tests) or create a real one via dynamic import
+  // Use injected engine or create a real one via dynamic import
   let engine: SyncEngine<EventRecord<TPayload>>
   let engineReady: Promise<void>
 
-  if (_internal?.engine) {
-    engine = _internal.engine
+  if (config.engine) {
+    engine = config.engine
     engineReady = Promise.resolve()
   } else {
-    // Lazy import drivestash to keep it as a peer dependency
     engineReady = import('drivestash').then((mod) => {
       engine = mod.createSyncEngine<EventRecord<TPayload>>({
         storeName: config.storeName,
@@ -178,11 +173,11 @@ export function createEventLog<TPayload = unknown>(
     },
 
     onStatusChange(listener: SyncStatusListener): () => void {
-      // Engine must be initialized synchronously for this to work with injected mocks
-      if (_internal?.engine) {
+      // Engine is initialized synchronously when injected
+      if (config.engine) {
         return engine.onStatusChange(listener)
       }
-      // For real engines, queue the listener registration
+      // For dynamically created engines, queue the listener registration
       let unsub: (() => void) | undefined
       engineReady.then(() => {
         unsub = engine.onStatusChange(listener)
@@ -206,7 +201,7 @@ export function createEventLog<TPayload = unknown>(
 
     destroy(): void {
       subscribers.clear()
-      if (_internal?.engine) {
+      if (config.engine) {
         engine.destroy()
         return
       }

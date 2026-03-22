@@ -35,13 +35,15 @@ describe('Multi-device safety', () => {
       storeName: 'shared',
       getAccessToken: () => null,
       deviceId: 'device-A',
-    }, { engine: engine1 })
+      engine: engine1,
+    })
 
     const log2 = createEventLog({
       storeName: 'shared',
       getAccessToken: () => null,
       deviceId: 'device-B',
-    }, { engine: engine2 })
+      engine: engine2,
+    })
 
     const e1 = await log1.append('item.added', { name: 'alpha' })
     const e2 = await log1.append('item.added', { name: 'beta' })
@@ -71,13 +73,15 @@ describe('Multi-device safety', () => {
       storeName: 'shared',
       getAccessToken: () => null,
       deviceId: 'device-A',
-    }, { engine: engine1 })
+      engine: engine1,
+    })
 
     const log2 = createEventLog({
       storeName: 'shared',
       getAccessToken: () => null,
       deviceId: 'device-B',
-    }, { engine: engine2 })
+      engine: engine2,
+    })
 
     // Simulate both devices appending events locally
     await log1.append('task.created', { title: 'From device A' })
@@ -110,13 +114,15 @@ describe('Multi-device safety', () => {
       storeName: 'shared',
       getAccessToken: () => null,
       deviceId: 'device-A',
-    }, { engine: engine1 })
+      engine: engine1,
+    })
 
     const log2 = createEventLog({
       storeName: 'shared',
       getAccessToken: () => null,
       deviceId: 'device-B',
-    }, { engine: engine2 })
+      engine: engine2,
+    })
 
     // Append with small delays so ULIDs differ
     await log1.append('first', {})

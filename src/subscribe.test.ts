@@ -57,7 +57,8 @@ describe('EventLog.subscribe', () => {
       storeName: 'test',
       getAccessToken: () => null,
       deviceId: 'device-1',
-    }, { engine })
+      engine,
+    })
   })
 
   it('fires on local append', async () => {
@@ -118,7 +119,8 @@ describe('EventLog.subscribe', () => {
       storeName: 'test',
       getAccessToken: () => null,
       deviceId: 'device-1',
-    }, { engine: engine2 })
+      engine: engine2,
+    })
 
     const listener2 = vi.fn()
     log2.subscribe(listener2)
@@ -139,7 +141,8 @@ describe('EventLog.subscribe — sync-triggered notifications', () => {
       storeName: 'test',
       getAccessToken: () => null,
       deviceId: 'device-1',
-    }, { engine })
+      engine,
+    })
   })
 
   it('notifies for new events arriving via pull', async () => {

@@ -38,7 +38,8 @@ describe('EventLog.append', () => {
       storeName: 'test',
       getAccessToken: () => null,
       deviceId: 'device-1',
-    }, { engine })
+      engine,
+    })
   })
 
   it('creates an EventRecord with correct structure', async () => {
@@ -83,7 +84,8 @@ describe('EventLog.list', () => {
       storeName: 'test',
       getAccessToken: () => null,
       deviceId: 'device-1',
-    }, { engine })
+      engine,
+    })
 
     // Insert events with known IDs in non-sorted order
     const records: EventRecord[] = [
@@ -115,7 +117,8 @@ describe('EventLog immutability', () => {
       storeName: 'test',
       getAccessToken: () => null,
       deviceId: 'device-1',
-    }, { engine })
+      engine,
+    })
 
     expect('delete' in log).toBe(false)
     expect('update' in log).toBe(false)
@@ -134,7 +137,8 @@ describe('EventLog sync delegation', () => {
       storeName: 'test',
       getAccessToken: () => null,
       deviceId: 'device-1',
-    }, { engine })
+      engine,
+    })
   })
 
   it('sync() delegates to engine', async () => {
@@ -175,7 +179,8 @@ describe('EventLog.clear', () => {
       storeName: 'test',
       getAccessToken: () => null,
       deviceId: 'device-1',
-    }, { engine })
+      engine,
+    })
   })
 
   it('delegates to engine.clear()', async () => {
@@ -219,7 +224,8 @@ describe('EventLog.clearRemote', () => {
       storeName: 'test',
       getAccessToken: () => null,
       deviceId: 'device-1',
-    }, { engine })
+      engine,
+    })
   })
 
   it('delegates to engine.clearRemote()', async () => {

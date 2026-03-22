@@ -1,4 +1,4 @@
-import type { SyncRecord } from 'drivestash'
+import type { SyncEngine, SyncRecord } from 'drivestash'
 
 /** Metadata attached to every event, identifying its origin and order. */
 export interface EventMetadata {
@@ -43,11 +43,13 @@ export interface EventQuery<TPayload = unknown> {
 }
 
 /** Configuration for creating an EventLog instance. */
-export interface EventLogConfig {
+export interface EventLogConfig<TPayload = unknown> {
   /** Name for the underlying drivestash store. */
   storeName: string
   /** Returns a Google OAuth2 access token, or null if unauthenticated. */
   getAccessToken: () => string | null
   /** Optional device ID. Auto-generated if not provided. */
   deviceId?: string
+  /** Optional pre-configured SyncEngine. Useful for testing with mocks or custom storage. */
+  engine?: SyncEngine<EventRecord<TPayload>>
 }

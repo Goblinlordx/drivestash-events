@@ -114,7 +114,8 @@ describe('EventLog.project() integration', () => {
       storeName: 'test',
       getAccessToken: () => null,
       deviceId: 'device-1',
-    }, { engine })
+      engine,
+    })
 
     await log.append('deposit', { amount: 100 })
     await log.append('deposit', { amount: 50 })
