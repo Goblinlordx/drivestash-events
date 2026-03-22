@@ -27,34 +27,34 @@ spec:
     5. Re-export SyncEngine, LocalStorePort, DriveAdapterPort, SyncEngineOptions, SyncRecord from drivestash via index.ts.
     6. Update README with DI/testing documentation.
 plan:
-  - phase: Dependency Upgrade
-    tasks:
-      - text: Bump drivestash to ^0.4.0 and npm install
-        done: false
-  - phase: API Change
-    tasks:
-      - text: Add optional engine field to EventLogConfig in types.ts
-        done: false
-      - text: Update createEventLog to use config.engine instead of _internal param
-        done: false
-      - text: Remove InternalOptions interface
-        done: false
-      - text: Update all 4 test files to pass engine via config instead of second arg
-        done: false
-      - text: Verify all tests pass and typecheck clean
-        done: false
-  - phase: Re-exports
-    tasks:
-      - text: Re-export SyncEngine, LocalStorePort, DriveAdapterPort, SyncEngineOptions, SyncRecord from index.ts
-        done: false
-      - text: Verify build output includes re-exported types in d.ts
-        done: false
-  - phase: Documentation
-    tasks:
-      - text: Update README Quick Start to show engine injection for testing
-        done: false
-      - text: Add Testing section to README showing mock engine pattern
-        done: false
-      - text: Document custom storage usage in README
-        done: false
+- phase: Dependency Upgrade
+  tasks:
+  - text: Bump drivestash to ^0.4.0 and npm install
+    done: true
+- phase: API Change
+  tasks:
+  - text: Add optional engine field to EventLogConfig in types.ts
+    done: true
+  - text: Update createEventLog to use config.engine instead of _internal param
+    done: true
+  - text: Remove InternalOptions interface
+    done: true
+  - text: Update all 4 test files to pass engine via config instead of second arg
+    done: true
+  - text: Verify all tests pass and typecheck clean
+    done: true
+- phase: Re-exports
+  tasks:
+  - text: Re-export SyncEngine, LocalStorePort, DriveAdapterPort, SyncEngineOptions, SyncRecord from index.ts
+    done: true
+  - text: Verify build output includes re-exported types in d.ts
+    done: true
+- phase: Documentation
+  tasks:
+  - text: Update README Quick Start to show engine injection for testing
+    done: true
+  - text: Add Testing section to README showing mock engine pattern
+    done: true
+  - text: Document custom storage usage in README
+    done: true
 extra: {}
