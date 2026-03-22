@@ -3,10 +3,10 @@ import { getDeviceId } from './device-id'
 
 // Mock localStorage for Node/Vitest environment
 const store = new Map<string, string>()
-const mockStorage = {
+const mockStorage: Pick<Storage, 'getItem' | 'setItem'> = {
   getItem: (key: string) => store.get(key) ?? null,
-  setItem: (key: string, value: string) => store.set(key, value),
-} as Storage
+  setItem: (key: string, value: string) => { store.set(key, value) },
+}
 
 describe('getDeviceId', () => {
   beforeEach(() => {
@@ -38,10 +38,10 @@ describe('getDeviceId', () => {
 
   it('generates unique IDs across instances', () => {
     const store2 = new Map<string, string>()
-    const mockStorage2 = {
+    const mockStorage2: Pick<Storage, 'getItem' | 'setItem'> = {
       getItem: (key: string) => store2.get(key) ?? null,
-      setItem: (key: string, value: string) => store2.set(key, value),
-    } as Storage
+      setItem: (key: string, value: string) => { store2.set(key, value) },
+    }
 
     const id1 = getDeviceId(mockStorage)
     const id2 = getDeviceId(mockStorage2)
