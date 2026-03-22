@@ -18,14 +18,14 @@ spec:
   technical_notes: Bump version to 0.2.0 in package.json. Commit and merge. Push to remote. Create annotated tag v0.2.0. Create
     GH release from tag.
 plan:
-  - phase: Version Bump
-    tasks:
-      - text: Bump version to 0.2.0 in package.json and commit
-        done: false
-  - phase: Release
-    tasks:
-      - text: Push to remote, create annotated tag v0.2.0, push tag
-        done: false
-      - text: Create GH release from v0.2.0 tag with release notes
-        done: false
+- phase: Version Bump
+  tasks:
+  - text: Bump version to 0.2.0 in package.json and commit
+    done: true
+- phase: Release
+  tasks:
+  - text: Push to remote, create annotated tag v0.2.0, push tag
+    done: false
+  - text: Create GH release from v0.2.0 tag with release notes
+    done: false
 extra: {}
