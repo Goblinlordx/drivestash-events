@@ -1,0 +1,54 @@
+id: clock-di_20260322151146Z
+title: Add Clock interface for testable time
+type: feature
+status: pending
+created: '2026-03-22'
+updated: '2026-03-22'
+spec:
+  summary: Define Clock interface, add optional clock to EventLogConfig, thread through ULID generation and event timestamps.
+    Enables deterministic testing.
+  context: Date.now() is used in event-id.ts for ULID timestamp and new Date() in event-log.ts for event metadata timestamp.
+    Tests cannot control time, making it impossible to test deterministic event ordering or verify exact timestamps.
+  codebase_analysis: 'Two Date usages: (1) event-id.ts:38 createEventId() uses Date.now() for ULID encoding, (2) event-log.ts:117
+    append() uses new Date().toISOString() for metadata.timestamp and updatedAt. createEventId() takes no args. EventLogConfig
+    already has engine as optional DI — clock follows the same pattern.'
+  acceptance_criteria:
+  - Clock interface exported from drivestash-events
+  - EventLogConfig accepts optional clock field
+  - createEventId uses injected clock time when provided
+  - Event metadata.timestamp uses injected clock
+  - Tests demonstrate deterministic time control
+  - Default behavior unchanged when no clock provided
+  - README documents clock DI for testing
+  out_of_scope: Changing ULID format or randomness source. Adding clock to drivestash itself.
+  technical_notes: 'Define Clock as { now(): number } in types.ts. Add optional clock to EventLogConfig, default to { now:
+    () => Date.now() }. Change createEventId(ms?: number) to accept optional ms param (defaults to Date.now()). In append(),
+    use clock.now() for both ULID and timestamp. Export Clock type from index.ts. Add tests showing deterministic time control.'
+plan:
+  - phase: Interface
+    tasks:
+      - text: Define Clock interface in types.ts
+        done: false
+      - text: Add optional clock field to EventLogConfig
+        done: false
+  - phase: Implementation
+    tasks:
+      - text: Update createEventId to accept optional ms timestamp parameter
+        done: false
+      - text: Thread clock through createEventLog into append (ULID and metadata timestamp)
+        done: false
+      - text: Update existing tests for new createEventId signature if needed
+        done: false
+      - text: Add tests for deterministic time via clock injection
+        done: false
+      - text: Verify all tests pass
+        done: false
+  - phase: Exports and Docs
+    tasks:
+      - text: Export Clock type from index.ts
+        done: false
+      - text: Update README Testing section to show clock injection example
+        done: false
+      - text: Add clock field to EventLogConfig table in README
+        done: false
+extra: {}
