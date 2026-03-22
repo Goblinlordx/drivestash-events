@@ -1,0 +1,92 @@
+id: release_20260322090601Z
+title: "CI/CD pipeline and npm publish workflow"
+type: chore
+status: pending
+created: 2026-03-22
+updated: 2026-03-22
+spec:
+  summary: |
+    GitHub Actions CI (typecheck, test, build on push/PR), publish workflow
+    triggered on GitHub release, .npmignore, and prepublishOnly hook.
+    Modeled after drivestash's proven CI/publish setup.
+  context: |
+    drivestash-events needs automated CI and a publish pipeline before
+    the first npm release. The user plans to:
+    1. Create the GitHub repo
+    2. Do the initial npm publish manually
+    3. Set up Trusted Publisher on npm
+    4. Then use GitHub Actions release+publish flow going forward
+
+    drivestash's workflows serve as the reference implementation:
+    - ci.yml: tests on push/PR to main (Node 22)
+    - publish.yml: publishes on release event with --access public
+  codebase_analysis: |
+    - No .github/ directory exists
+    - No .npmignore exists
+    - No prepublishOnly script in package.json
+    - Build/test/typecheck scripts already work: npm run build, npm test, npm run typecheck
+    - drivestash reference:
+      - ci.yml: checkout, setup-node@v4, npm ci, npm run lint, npm test, npm run build
+      - publish.yml: on release published, checkout, setup-node with registry-url, npm ci, npm publish --access public
+      - Uses NODE_AUTH_TOKEN from secrets
+  acceptance_criteria:
+    - ".github/workflows/ci.yml runs typecheck, test, and build on push/PR to main"
+    - ".github/workflows/publish.yml publishes to npm on GitHub release event"
+    - "publish.yml uses id-token: write permission for npm provenance"
+    - ".npmignore excludes src/, tests, configs, .agent/ from published package"
+    - "package.json has prepublishOnly script that runs typecheck + test + build"
+    - "CI workflow uses Node 22 and npm ci"
+  out_of_scope: |
+    - Setting up the GitHub repository (user will do this)
+    - Initial npm publish (user will do this)
+    - npm Trusted Publisher configuration (user will do this)
+    - Lint setup (no linter configured yet — future track)
+  technical_notes: |
+    CI workflow (ci.yml):
+    - Trigger: push to main, PR to main
+    - Steps: checkout, setup-node 22, npm ci, typecheck, test, build
+    - Single job is sufficient for this small library
+
+    Publish workflow (publish.yml):
+    - Trigger: release published
+    - Permissions: contents read, id-token write (for npm provenance)
+    - Steps: checkout, setup-node 22 with registry-url, npm ci, npm publish --access public
+    - Uses NODE_AUTH_TOKEN secret (standard npm automation token or OIDC via Trusted Publisher)
+
+    .npmignore should exclude:
+    - src/ (only dist/ ships)
+    - *.test.ts
+    - .agent/
+    - .github/
+    - tsconfig.json, tsup.config.ts, vitest.config.ts
+    - .gitignore
+
+    prepublishOnly: "npm run typecheck && npm run test && npm run build"
+plan:
+  - phase: "CI workflow"
+    tasks:
+      - text: "Create .github/workflows/ci.yml with typecheck, test, build jobs on push/PR to main"
+        done: false
+      - text: "Verify CI workflow YAML is valid"
+        done: false
+  - phase: "Publish workflow"
+    tasks:
+      - text: "Create .github/workflows/publish.yml triggered on release published event"
+        done: false
+      - text: "Configure id-token write permission and NODE_AUTH_TOKEN for npm provenance"
+        done: false
+  - phase: "Package hygiene"
+    tasks:
+      - text: "Create .npmignore excluding src/, tests, configs, .agent/, .github/"
+        done: false
+      - text: "Add prepublishOnly script to package.json (typecheck + test + build)"
+        done: false
+      - text: "Verify npm pack --dry-run shows only intended files"
+        done: false
+  - phase: "Verification"
+    tasks:
+      - text: "Run full build pipeline locally to confirm everything works"
+        done: false
+      - text: "Verify publish workflow matches drivestash reference pattern"
+        done: false
+extra: {}

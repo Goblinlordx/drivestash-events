@@ -1,0 +1,99 @@
+id: docs_20260322090600Z
+title: "Comprehensive documentation and package metadata"
+type: chore
+status: pending
+created: 2026-03-22
+updated: 2026-03-22
+spec:
+  summary: |
+    README.md with overview, API reference, usage/integration guide,
+    advantages/limitations, and migration patterns. LICENSE file,
+    CHANGELOG, and complete package.json metadata for npm publishing.
+  context: |
+    drivestash-events is feature-complete (10/11 spec items fulfilled,
+    only low-priority snapshot deferred) but has zero documentation.
+    No README, LICENSE, CHANGELOG, or npm metadata fields exist.
+    The library needs thorough documentation before publishing to npm.
+
+    Reference: drivestash (the peer dependency) has a comprehensive
+    README and complete package.json metadata that we should match
+    in quality.
+  codebase_analysis: |
+    - Public API exports from src/index.ts: createEventLog, EventLog,
+      EventRecord, EventMetadata, EventLogConfig, EventQuery,
+      createEventId, project, Projector, queryEvents, unionMerge,
+      getDeviceId, EventListener
+    - package.json is missing: repository, homepage, keywords, author,
+      bugs, engines fields. files array needs README and LICENSE.
+    - No README.md, LICENSE, or CHANGELOG.md exist
+    - drivestash reference: has comprehensive README covering features,
+      sync flow, API, and auto-sync triggers
+  acceptance_criteria:
+    - "README.md covers: overview, installation, quick start, full API reference, usage patterns"
+    - "README.md includes integration guide showing projector patterns (like trip-planning progress/score)"
+    - "README.md documents advantages, limitations, and what the library is NOT suited for"
+    - "README.md includes multi-device safety explanation"
+    - "LICENSE file exists with MIT license text"
+    - "CHANGELOG.md exists with v0.0.1 initial release entry"
+    - "package.json has repository, homepage, keywords, author, bugs fields"
+    - "package.json files array includes README.md and LICENSE"
+  out_of_scope: |
+    - CI/CD workflows (track 2)
+    - .npmignore (track 2)
+    - React hooks documentation (future — core library only)
+    - Snapshot feature documentation (not implemented)
+  technical_notes: |
+    Documentation structure for README.md:
+
+    1. Header + badges (npm, license, build status placeholder)
+    2. One-paragraph overview
+    3. Features list
+    4. Installation
+    5. Quick Start (minimal example)
+    6. API Reference (all exports with signatures and descriptions)
+    7. Usage Patterns
+       - Basic event logging
+       - Projections (with trip-planning-style progress/score example)
+       - Querying events
+       - Subscribing to changes
+       - Multi-device sync
+    8. How It Works (architecture: ULID, union merge, drivestash)
+    9. When To Use / When Not To Use
+    10. Limitations and Risks
+    11. License
+
+    package.json fields to add:
+    - "repository": { "type": "git", "url": "git+https://github.com/Goblinlordx/drivestash-events.git" }
+    - "homepage": "https://github.com/Goblinlordx/drivestash-events#readme"
+    - "bugs": { "url": "https://github.com/Goblinlordx/drivestash-events/issues" }
+    - "keywords": ["event-sourcing", "offline-first", "google-drive", "drivestash", "event-log", "projection", "sync", "append-only"]
+    - "author": "Goblinlordx"
+    - Update "files" to include README.md and LICENSE
+plan:
+  - phase: "Package metadata"
+    tasks:
+      - text: "Add repository, homepage, bugs, keywords, author, engines fields to package.json"
+        done: false
+      - text: "Update files array in package.json to include README.md and LICENSE"
+        done: false
+      - text: "Create LICENSE file with MIT license text (year 2026)"
+        done: false
+      - text: "Create CHANGELOG.md with v0.0.1 initial release entry"
+        done: false
+  - phase: "README documentation"
+    tasks:
+      - text: "Write README header, overview, features list, and installation section"
+        done: false
+      - text: "Write Quick Start example and full API Reference section"
+        done: false
+      - text: "Write Usage Patterns section with projector examples (progress/score from trip-planning)"
+        done: false
+      - text: "Write How It Works section (ULID ordering, union merge, drivestash integration)"
+        done: false
+      - text: "Write When To Use, When Not To Use, Limitations and Risks sections"
+        done: false
+  - phase: "Verification"
+    tasks:
+      - text: "Verify build still passes, all links are valid, and package.json is valid JSON"
+        done: false
+extra: {}
