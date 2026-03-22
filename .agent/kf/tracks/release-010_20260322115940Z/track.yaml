@@ -1,0 +1,35 @@
+id: release-010_20260322115940Z
+title: Release v0.1.0
+type: chore
+status: pending
+created: '2026-03-22'
+updated: '2026-03-22'
+spec:
+  summary: Bump version to 0.1.0 and publish to npm. Reflects drivestash upgrade to 0.1.0 and simplified installation (no
+    peer dep).
+  context: drivestash-events was upgraded to drivestash ^0.1.0 (bin format + compression internals) and drivestash was moved
+    from peerDependencies to dependencies for simpler installation. Current version is 0.0.2. This warrants a 0.1.0 bump since
+    the dependency model changed.
+  codebase_analysis: package.json version is 0.0.2. prepublishOnly script runs typecheck, test, and build. .npmignore is configured.
+    Publishing infrastructure is already in place.
+  acceptance_criteria:
+  - package.json version is 0.1.0
+  - npm publish succeeds
+  - Version commit merged to main
+  out_of_scope: No code changes. No CHANGELOG updates (no CHANGELOG maintained).
+  technical_notes: Bump version in package.json to 0.1.0. Run npm publish which triggers prepublishOnly (typecheck + test
+    + build).
+plan:
+  - phase: Release
+    tasks:
+      - text: Bump version to 0.1.0 in package.json
+        done: false
+      - text: Commit version bump
+        done: false
+  - phase: Publish
+    tasks:
+      - text: Run npm publish (triggers prepublishOnly verification)
+        done: false
+      - text: Verify package is live on npmjs.com
+        done: false
+extra: {}
