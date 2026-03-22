@@ -153,14 +153,16 @@ const unsub = log.onStatusChange((status) => {
 
 #### `log.clear()`
 
-Clear all local events and reset internal state. Use on logout to prevent data leaking between accounts.
+Clear all local events and reset internal state. Data remains on Google Drive and will be restored on next sync.
 
-```typescript
-// User logs out — wipe local data
-await log.clear()
-```
+#### `log.clearRemote()`
 
-After clearing, the log is empty and the sequence counter resets. New appends start fresh.
+Clear all local events AND delete the remote Google Drive file. **This is not recoverable** — the data is permanently gone.
+
+| Method | Local | Remote | Recoverable |
+|--------|-------|--------|-------------|
+| `clear()` | Wipes IndexedDB | Untouched | Yes — data restored on next sync |
+| `clearRemote()` | Wipes IndexedDB | Deletes Drive file | No — permanent deletion |
 
 #### `log.destroy()`
 
@@ -349,14 +351,24 @@ Clear local data when a user logs out to prevent events leaking between accounts
 
 ```typescript
 async function handleLogout() {
-  await log.clear()  // wipe IndexedDB events and reset state
+  await log.clear()  // wipe local only — data stays on Drive
   log.destroy()      // clean up listeners
 }
 
 async function handleLogin(newToken: string) {
   token = newToken
-  // Create a fresh log — or reuse the same instance and sync
   await log.sync()   // pulls the new account's events from Drive
+}
+```
+
+### Full Data Deletion
+
+If a user requests permanent deletion of all their data:
+
+```typescript
+async function handleDeleteAllData() {
+  await log.clearRemote()  // wipes local AND deletes Drive file
+  log.destroy()
 }
 ```
 
