@@ -51,7 +51,7 @@ log.destroy()
 
 ## API Reference
 
-### `createEventLog<TPayload>(config, _internal?)`
+### `createEventLog<TPayload>(config)`
 
 Creates an event log instance.
 
@@ -72,6 +72,7 @@ const log = createEventLog<MyPayload>({
 | `storeName` | `string` | yes | Name for the underlying drivestash store |
 | `getAccessToken` | `() => string \| null` | yes | Returns a Google OAuth2 token, or null |
 | `deviceId` | `string` | no | Device identifier. Auto-generated via `getDeviceId()` if omitted |
+| `engine` | `SyncEngine` | no | Custom SyncEngine instance. Bypasses default drivestash engine creation. Useful for testing or custom storage backends. |
 
 ### `EventLog<TPayload>`
 
@@ -371,6 +372,44 @@ async function handleDeleteAllData() {
   log.destroy()
 }
 ```
+
+## Testing
+
+Inject a mock engine via `config.engine` to test without real storage:
+
+```typescript
+import { createEventLog } from 'drivestash-events'
+import type { SyncEngine, EventRecord } from 'drivestash-events'
+
+// Create a simple in-memory mock
+function createMockEngine(): SyncEngine<EventRecord> {
+  const records = new Map<string, EventRecord>()
+  return {
+    get: async (id) => records.get(id),
+    put: async (record) => { records.set(record.id, record) },
+    delete: async (id) => { records.delete(id) },
+    list: async () => Array.from(records.values()),
+    sync: async () => {},
+    pull: async () => {},
+    push: async () => {},
+    clear: async () => { records.clear() },
+    clearRemote: async () => { records.clear() },
+    onStatusChange: () => () => {},
+    destroy: () => {},
+  }
+}
+
+const log = createEventLog({
+  storeName: 'test',
+  getAccessToken: () => null,
+  engine: createMockEngine(),  // no IndexedDB or Drive needed
+})
+
+await log.append('test', { value: 42 })
+const events = await log.list() // works entirely in memory
+```
+
+All drivestash types are re-exported from `drivestash-events` — no need to install drivestash as a separate dependency for type imports.
 
 ## How It Works
 
