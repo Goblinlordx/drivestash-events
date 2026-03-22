@@ -151,6 +151,17 @@ const unsub = log.onStatusChange((status) => {
 })
 ```
 
+#### `log.clear()`
+
+Clear all local events and reset internal state. Use on logout to prevent data leaking between accounts.
+
+```typescript
+// User logs out — wipe local data
+await log.clear()
+```
+
+After clearing, the log is empty and the sequence counter resets. New appends start fresh.
+
 #### `log.destroy()`
 
 Clean up event listeners and resources.
@@ -330,6 +341,23 @@ await log.append('note.created', { text: 'From laptop' })
 // After sync on either device:
 const events = await log.list()
 // Both events are present, sorted by creation time
+```
+
+### Logout / Account Switching
+
+Clear local data when a user logs out to prevent events leaking between accounts:
+
+```typescript
+async function handleLogout() {
+  await log.clear()  // wipe IndexedDB events and reset state
+  log.destroy()      // clean up listeners
+}
+
+async function handleLogin(newToken: string) {
+  token = newToken
+  // Create a fresh log — or reuse the same instance and sync
+  await log.sync()   // pulls the new account's events from Drive
+}
 ```
 
 ## How It Works
