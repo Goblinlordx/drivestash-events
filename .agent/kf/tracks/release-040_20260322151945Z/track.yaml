@@ -1,0 +1,29 @@
+id: release-040_20260322151945Z
+title: Release v0.4.0
+type: chore
+status: pending
+created: '2026-03-22'
+updated: '2026-03-22'
+spec:
+  summary: Bump to 0.4.0 and release. Includes Clock DI, createSyncEngine re-export, SyncEngineConfig re-export.
+  context: 'New since v0.3.0: Clock interface for testable time, createSyncEngine and SyncEngineConfig re-exported from drivestash.
+    Release flow: tag -> GH release -> npm publish via CI.'
+  codebase_analysis: Current version 0.3.0. publish.yml triggers on release published.
+  acceptance_criteria:
+  - package.json version is 0.4.0
+  - v0.4.0 tag created and pushed
+  - GitHub release created
+  out_of_scope: No code changes.
+  technical_notes: Bump version to 0.4.0. Commit and merge. Push. Tag v0.4.0. GH release.
+plan:
+  - phase: Version Bump
+    tasks:
+      - text: Bump version to 0.4.0 in package.json and commit
+        done: false
+  - phase: Release
+    tasks:
+      - text: Push to remote, create annotated tag v0.4.0, push tag
+        done: false
+      - text: Create GH release from v0.4.0 tag with release notes
+        done: false
+extra: {}
